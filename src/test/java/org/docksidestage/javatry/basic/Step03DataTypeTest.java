@@ -45,16 +45,17 @@ public class Step03DataTypeTest extends PlainTestCase {
         Boolean dstore = true;
         BigDecimal amba = new BigDecimal("9.4");
 
-        piari = piari.plusDays(1);
+        piari = piari.plusDays(1); // 2001/9/5
         land = piari.getYear();
-        bonvo = bonvo.plusMonths(1);
+        bonvo = bonvo.plusMonths(1); // 2001/10/4 12:34:56
         land = bonvo.getMonthValue();
-        land--;
+        land--; // 9
         if (dstore) {
-            BigDecimal addedDecimal = amba.add(new BigDecimal(land));
+            BigDecimal addedDecimal = amba.add(new BigDecimal(land)); // 18.4
             sea = String.valueOf(addedDecimal);
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? =>  18.4
+        assertLog(18.4, sea);
     }
 
     // ===================================================================================
@@ -82,9 +83,9 @@ public class Step03DataTypeTest extends PlainTestCase {
         if (dstore > piari) {
             sea = 0;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 2 (へー）
+        assertLog(2, sea);
     }
-
     // ===================================================================================
     //                                                                              Object
     //                                                                              ======
@@ -92,7 +93,8 @@ public class Step03DataTypeTest extends PlainTestCase {
     public void test_datatype_object() {
         St3ImmutableStage stage = new St3ImmutableStage("hangar");
         String sea = stage.getStageName();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => hangar
+        assertLog("hangar", sea);
     }
 
     private static class St3ImmutableStage {
