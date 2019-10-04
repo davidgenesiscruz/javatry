@@ -248,14 +248,4 @@ public class Step01VariableTest extends PlainTestCase {
         bldr = new StringBuilder(bldr);
         return bldr;
     }
-
-    // ===================================================================================
-    //                                                                           Assertion
-    //                                                                           =========
-    /**
-     * Converts expected and actual values to log output String before asserting equality.
-     */
-    private void assertLog(Object expected, Object actual) {
-        assertEquals("" + expected, "" + actual);
-    }
 }

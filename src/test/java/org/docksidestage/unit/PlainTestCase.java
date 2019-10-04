@@ -130,6 +130,13 @@ public abstract class PlainTestCase extends TestCase {
         assertEquals(null, Integer.valueOf(expected), actual);
     }
 
+    /**
+     * Converts expected and actual values to log output String before asserting equality.
+     */
+    protected void assertLog(Object expected, Object actual) {
+        assertEquals("" + expected, "" + actual);
+    }
+
     // -----------------------------------------------------
     //                                            True/False
     //                                            ----------
