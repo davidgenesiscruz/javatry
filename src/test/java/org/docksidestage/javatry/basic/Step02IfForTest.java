@@ -16,6 +16,7 @@
 package org.docksidestage.javatry.basic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.docksidestage.unit.PlainTestCase;
@@ -52,7 +53,8 @@ public class Step02IfForTest extends PlainTestCase {
         } else {
             sea = 7;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 7
+        assertLog(7, sea);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -67,7 +69,8 @@ public class Step02IfForTest extends PlainTestCase {
         } else {
             sea = 9;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 7
+        assertLog(7, sea);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -91,7 +94,8 @@ public class Step02IfForTest extends PlainTestCase {
         if (land) {
             sea = 10;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 10
+        assertLog(10, sea);
     }
 
     // ===================================================================================
@@ -107,7 +111,8 @@ public class Step02IfForTest extends PlainTestCase {
                 sea = stage;
             }
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => dockside
+        assertLog("dockside", sea);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -117,7 +122,8 @@ public class Step02IfForTest extends PlainTestCase {
         for (String stage : stageList) {
             sea = stage;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => magiclamp
+        assertLog("magiclamp", sea);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -133,7 +139,8 @@ public class Step02IfForTest extends PlainTestCase {
                 break;
             }
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => hangar
+        assertLog("hangar", sea);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -149,7 +156,8 @@ public class Step02IfForTest extends PlainTestCase {
             }
         });
         String sea = sb.toString();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => dockside
+        assertLog("dockside", sea);
     }
 
     // ===================================================================================
@@ -160,7 +168,18 @@ public class Step02IfForTest extends PlainTestCase {
      * (prepareStageList()のリストから "a" が含まれているものだけのリストを作成して、それをループで回してログに表示しましょう。(Stream APIなしで))
      */
     public void test_iffor_making() {
-        // write if-for here
+        List<String> stageList = prepareStageList();
+        List<String> containsA = new ArrayList<>();
+        stageList.forEach(stage -> {
+            if (stage.contains("a")) {
+                containsA.add(stage);
+            }
+        });
+
+        containsA.forEach(string -> {
+            log(string);
+            assertTrue(string.contains("a"));
+        });
     }
 
     // ===================================================================================
@@ -183,6 +202,17 @@ public class Step02IfForTest extends PlainTestCase {
             }
         }
         log(sea); // should be same as before-fix
+
+        StringBuilder sea2 = new StringBuilder();
+        stageList.forEach(stage -> {
+            if (sea2.length() != 0 || !stage.contains("ga")) {
+                return;
+            }
+            sea2.append(stage);
+        });
+        log(sea2);
+
+        assertLog(sea, sea2);
     }
 
     /**
@@ -190,13 +220,27 @@ public class Step02IfForTest extends PlainTestCase {
      * (if文for文についてあなたのオリジナルの質問形式のエクササイズを作ってみましょう)
      * <pre>
      * _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-     * your question here (ここにあなたの質問を):
+     * your question here (ここにあなたの質問を): what is the log output?
      * 
      * _/_/_/_/_/_/_/_/_/_/
      * </pre>
      */
+    List<String> list = Arrays.asList("a", "b", "c", "d", "e", "f", "g");
     public void test_iffor_yourExercise() {
-        // write your code here
+        List<String> results = new ArrayList<>();
+        for (String item : list) {
+            results.add(item);
+            if (list.indexOf(item) == 3) {
+                changeList();
+                results.addAll(list);
+            }
+        }
+        log(results); // your answer? => [a, b, c, d, 1, 2, 3, 4, 5, 6, 7, e, f, g]
+        assertLog("[a, b, c, d, 1, 2, 3, 4, 5, 6, 7, e, f, g]", results);
+    }
+
+    private void changeList() {
+        list = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
     }
 
     // ===================================================================================
