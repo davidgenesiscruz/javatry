@@ -211,8 +211,24 @@ public class Step02IfForTest extends PlainTestCase {
             sea2.append(stage);
         });
         log(sea2);
-
         assertLog(sea, sea2);
+
+        Found found = new Found();
+        stageList.forEach(stage -> {
+            if (found.value != null || stage.contains("br")) {
+                return;
+            }
+
+            if (stage.contains("ga")) {
+                found.value = stage;
+            }
+        });
+        log(found.value);
+        assertLog(sea, found.value);
+    }
+
+    static class Found {
+        String value;
     }
 
     /**
