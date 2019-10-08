@@ -17,6 +17,8 @@ package org.docksidestage.javatry.basic;
 
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth.TicketShortMoneyException;
+import org.docksidestage.bizfw.basic.buyticket.TicketBuyResult;
+import org.docksidestage.bizfw.basic.buyticket.Ticket;
 import org.docksidestage.unit.PlainTestCase;
 
 /**
@@ -38,8 +40,9 @@ public class Step05ClassTest extends PlainTestCase {
     public void test_class_howToUse_basic() {
         TicketBooth booth = new TicketBooth();
         booth.buyOneDayPassport(7400);
-        int sea = booth.getQuantity();
-        log(sea); // your answer? => 
+        int sea = booth.getOneDayQuantity();
+        log(sea); // your answer? => 9
+        assertLog(9, sea);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -47,20 +50,23 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth booth = new TicketBooth();
         booth.buyOneDayPassport(10000);
         Integer sea = booth.getSalesProceeds();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 10000 => 7400
+//        assertLog(10000, sea); fixed to 7400
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_class_howToUse_nosales() {
         TicketBooth booth = new TicketBooth();
         Integer sea = booth.getSalesProceeds();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => null
+        assertLog(null, sea);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_class_howToUse_wrongQuantity() {
         Integer sea = doTest_class_ticket_wrongQuantity();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 9 => 10
+//        assertLog(9, sea); fixed to 10
     }
 
     private Integer doTest_class_ticket_wrongQuantity() {
@@ -72,7 +78,7 @@ public class Step05ClassTest extends PlainTestCase {
         } catch (TicketShortMoneyException continued) {
             log("Failed to buy one-day passport: money=" + handedMoney, continued);
         }
-        return booth.getQuantity();
+        return booth.getOneDayQuantity();
     }
 
     // ===================================================================================
@@ -85,6 +91,7 @@ public class Step05ClassTest extends PlainTestCase {
     public void test_class_letsFix_ticketQuantityReduction() {
         Integer sea = doTest_class_ticket_wrongQuantity();
         log(sea); // should be max quantity, visual check here
+        assertLog(10, sea);
     }
 
     /**
@@ -96,6 +103,7 @@ public class Step05ClassTest extends PlainTestCase {
         booth.buyOneDayPassport(10000);
         Integer sea = booth.getSalesProceeds();
         log(sea); // should be same as one-day price, visual check here
+        assertLog(7400, sea);
     }
 
     /**
@@ -104,13 +112,18 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_letsFix_makeMethod_twoday() {
         // comment out after making the method
-        //TicketBooth booth = new TicketBooth();
-        //int money = 14000;
-        //int change = booth.buyTwoDayPassport(money);
-        //Integer sea = booth.getSalesProceeds() + change;
-        //log(sea); // should be same as money
+        TicketBooth booth = new TicketBooth();
+        int money = 14000;
+//        int change = booth.buyTwoDayPassport(money);
+//        Integer sea = booth.getSalesProceeds() + change;
+        TicketBuyResult ticketBuyResult = booth.buyTwoDayPassport(money);
+        Integer sea = booth.getSalesProceeds() + ticketBuyResult.getChange();
+        log(sea); // should be same as money
+        assertLog(money, sea);
 
         // and show two-day passport quantity here
+        log(booth.getTwoDayQuantity());
+        assertLog(9, booth.getTwoDayQuantity());
     }
 
     /**
@@ -120,7 +133,9 @@ public class Step05ClassTest extends PlainTestCase {
     public void test_class_letsFix_refactor_recycle() {
         TicketBooth booth = new TicketBooth();
         booth.buyOneDayPassport(10000);
-        log(booth.getQuantity(), booth.getSalesProceeds()); // should be same as before-fix
+        log(booth.getOneDayQuantity(), booth.getSalesProceeds()); // should be same as before-fix
+        assertLog(9, booth.getOneDayQuantity());
+        assertLog(7400, booth.getSalesProceeds());
     }
 
     // ===================================================================================
@@ -132,12 +147,16 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_moreFix_return_ticket() {
         // comment out after modifying the method
-        //TicketBooth booth = new TicketBooth();
-        //Ticket oneDayPassport = booth.buyOneDayPassport(10000);
-        //log(oneDayPassport.getDisplayPrice()); // should be same as one-day price
-        //log(oneDayPassport.isAlreadyIn()); // should be false
-        //oneDayPassport.doInPark();
-        //log(oneDayPassport.isAlreadyIn()); // should be true
+        TicketBooth booth = new TicketBooth();
+        Ticket oneDayPassport = booth.buyOneDayPassport(10000);
+        log(oneDayPassport.getDisplayPrice()); // should be same as one-day price
+        assertLog(7400, oneDayPassport.getDisplayPrice());
+        log(oneDayPassport.isAlreadyIn()); // should be false
+        assertLog(false, oneDayPassport.isAlreadyIn());
+        oneDayPassport.doInPark();
+        log(oneDayPassport.isAlreadyIn()); // should be true
+        assertLog(true, oneDayPassport.isAlreadyIn());
+
     }
 
     /**
@@ -146,12 +165,13 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_moreFix_return_whole() {
         // comment out after modifying the method
-        //TicketBooth booth = new TicketBooth();
-        //int handedMoney = 20000;
-        //TicketBuyResult twoDayPassportResult = booth.buyTwoDayPassport(handedMoney);
-        //Ticket twoDayPassport = twoDayPassportResult.getTicket();
-        //int change = twoDayPassportResult.getChange();
-        //log(twoDayPassport.getDisplayPrice() + change); // should be same as money
+        TicketBooth booth = new TicketBooth();
+        int handedMoney = 20000;
+        TicketBuyResult twoDayPassportResult = booth.buyTwoDayPassport(handedMoney);
+        Ticket twoDayPassport = twoDayPassportResult.getTicket();
+        int change = twoDayPassportResult.getChange();
+        log(twoDayPassport.getDisplayPrice() + change); // should be same as money
+        assertLog(handedMoney, twoDayPassport.getDisplayPrice() + change);
     }
 
     /**
@@ -160,6 +180,14 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_moreFix_type() {
         // your confirmation code here
+        TicketBooth booth = new TicketBooth();
+        Ticket ticket = booth.buyOneDayPassport(10000);
+        log(ticket.getType());
+        assertLog("ONE_DAY", ticket.getType());
+
+        TicketBuyResult ticketBuyResult = booth.buyTwoDayPassport(15000);
+        log(ticketBuyResult.getTicket().getType());
+        assertLog("TWO_DAY", ticketBuyResult.getTicket().getType());
     }
 
     // ===================================================================================
@@ -183,6 +211,20 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_moreFix_useInterface() {
         // your confirmation code here
+        TicketBooth booth = new TicketBooth();
+        TicketBuyResult ticketBuyResult = booth.buyTwoDayPassport(15000);
+        Ticket ticket = ticketBuyResult.getTicket();
+        int daysInPark = 0;
+        try {
+            while (true) {
+                ticket.doInPark();
+                ++daysInPark;
+            }
+        } catch (Exception e) {
+            log(e);
+        }
+        log(daysInPark);
+        assertLog(2, daysInPark);
     }
 
     /**
@@ -191,6 +233,20 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_moreFix_wonder() {
         // your confirmation code here
+        TicketBooth booth = new TicketBooth();
+        TicketBuyResult ticketBuyResult = booth.buyFourDayPassport(30000);
+        Ticket ticket = ticketBuyResult.getTicket();
+        int daysInPark = 0;
+        try {
+            while (true) {
+                ticket.doInPark();
+                ++daysInPark;
+            }
+        } catch (Exception e) {
+            log(e);
+        }
+        log(daysInPark);
+        assertLog(4, daysInPark);
     }
 
     /**

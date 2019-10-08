@@ -15,6 +15,9 @@
  */
 package org.docksidestage.bizfw.basic.buyticket;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author jflute
  */
@@ -24,35 +27,70 @@ public class TicketBooth {
     //                                                                          Definition
     //                                                                          ==========
     private static final int MAX_QUANTITY = 10;
-    private static final int ONE_DAY_PRICE = 7400; // when 2019/06/15
 
     // ===================================================================================
     //                                                                           Attribute
     //                                                                           =========
-    private int quantity = MAX_QUANTITY;
+    private Map<TicketType, Integer> availabilities;
     private Integer salesProceeds;
 
     // ===================================================================================
     //                                                                         Constructor
     //                                                                         ===========
     public TicketBooth() {
+        availabilities = new HashMap<>();
+        for (TicketType type : TicketType.values()) {
+            availabilities.put(type, MAX_QUANTITY);
+        }
     }
 
     // ===================================================================================
     //                                                                          Buy Ticket
     //                                                                          ==========
-    public void buyOneDayPassport(int handedMoney) {
-        if (quantity <= 0) {
+    public Ticket buyOneDayPassport(int handedMoney) {
+        TicketBuyResult ticketBuyResult = buyPassport(TicketType.ONE_DAY, handedMoney);
+
+        return ticketBuyResult.getTicket();
+    }
+
+    public TicketBuyResult buyTwoDayPassport(int handedMoney) {
+        return buyPassport(TicketType.TWO_DAY, handedMoney);
+    }
+
+    public TicketBuyResult buyFourDayPassport(int handedMoney) {
+        return buyPassport(TicketType.FOUR_DAY, handedMoney);
+    }
+
+    private TicketBuyResult buyPassport(TicketType type, int handedMoney) {
+        Ticket ticket = new MultipleDayTicket(type);
+        validatePurchase(ticket, handedMoney);
+
+        int availability = availabilities.get(type);
+        availabilities.put(type, --availability);
+
+        int displayPrice = ticket.getDisplayPrice();
+        incrementSalesProceeds(displayPrice);
+
+        return new TicketBuyResult(ticket, handedMoney - displayPrice);
+    }
+
+    private void validatePurchase(Ticket ticket, int handedMoney) {
+        int availability = availabilities.get(ticket.getType());
+
+        if (availability <= 0) {
             throw new TicketSoldOutException("Sold out");
         }
-        --quantity;
-        if (handedMoney < ONE_DAY_PRICE) {
+
+        if (handedMoney < ticket.getDisplayPrice()) {
             throw new TicketShortMoneyException("Short money: " + handedMoney);
         }
+    }
+    
+    private void incrementSalesProceeds(int price) {
         if (salesProceeds != null) {
-            salesProceeds = salesProceeds + handedMoney;
+            salesProceeds = salesProceeds + price;
         } else {
-            salesProceeds = handedMoney;
+            salesProceeds = price;
         }
     }
 
@@ -77,8 +115,16 @@ public class TicketBooth {
     // ===================================================================================
     //                                                                            Accessor
     //                                                                            ========
-    public int getQuantity() {
-        return quantity;
+    public int getOneDayQuantity() {
+        return availabilities.get(TicketType.ONE_DAY);
+    }
+
+    public int getTwoDayQuantity() {
+        return availabilities.get(TicketType.TWO_DAY);
+    }
+
+    public int getFourDayQuantity() {
+        return availabilities.get(TicketType.FOUR_DAY);
     }
 
     public Integer getSalesProceeds() {
