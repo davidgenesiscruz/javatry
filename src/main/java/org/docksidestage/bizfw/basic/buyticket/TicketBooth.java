@@ -62,7 +62,7 @@ public class TicketBooth {
     }
 
     private TicketBuyResult buyPassport(TicketType type, int handedMoney) {
-        Ticket ticket = new MultipleDayTicket(type);
+        Ticket ticket = generateTicket(type);
         validatePurchase(ticket, handedMoney);
 
         int availability = availabilities.get(type);
@@ -72,6 +72,14 @@ public class TicketBooth {
         incrementSalesProceeds(displayPrice);
 
         return new TicketBuyResult(ticket, handedMoney - displayPrice);
+    }
+
+    private Ticket generateTicket(TicketType type) {
+        if (type == TicketType.ONE_DAY) {
+            return new OneDayTicket();
+        }
+
+        return new MultipleDayTicket(type);
     }
 
     private void validatePurchase(Ticket ticket, int handedMoney) {
