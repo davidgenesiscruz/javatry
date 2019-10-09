@@ -17,14 +17,15 @@ package org.docksidestage.javatry.basic;
 
 import org.docksidestage.bizfw.basic.buyticket.Ticket;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
-import org.docksidestage.bizfw.basic.objanimal.Animal;
-import org.docksidestage.bizfw.basic.objanimal.BarkedSound;
-import org.docksidestage.bizfw.basic.objanimal.Cat;
-import org.docksidestage.bizfw.basic.objanimal.Dog;
-import org.docksidestage.bizfw.basic.objanimal.Zombie;
+import org.docksidestage.bizfw.basic.objanimal.*;
 import org.docksidestage.bizfw.basic.objanimal.loud.AlarmClock;
 import org.docksidestage.bizfw.basic.objanimal.loud.Loudable;
 import org.docksidestage.bizfw.basic.objanimal.runner.FastRunner;
+import org.docksidestage.javatry.basic.st6.dbms.St6MySql;
+import org.docksidestage.javatry.basic.st6.dbms.St6PostgreSql;
+import org.docksidestage.javatry.basic.st6.os.St6MacOS;
+import org.docksidestage.javatry.basic.st6.os.St6OldWindows;
+import org.docksidestage.javatry.basic.st6.os.St6Windows;
 import org.docksidestage.unit.PlainTestCase;
 
 /**
@@ -65,12 +66,12 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
             throw new IllegalStateException("Short money: handedMoney=" + handedMoney);
         }
         --quantity;
-        salesProceeds = handedMoney;
+        salesProceeds = oneDayPrice;
 
         //
         // [ticket info]
         //
-        int displayPrice = quantity;
+        int displayPrice = oneDayPrice;
         boolean alreadyIn = false;
 
         // other processes here...
@@ -94,8 +95,8 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     private void saveBuyingHistory(int quantity, Integer salesProceeds, int displayPrice, boolean alreadyIn) {
         if (alreadyIn) {
             // only logging here (normally e.g. DB insert)
-            showTicketBooth(displayPrice, salesProceeds);
-            showYourTicket(quantity, alreadyIn);
+            showTicketBooth(quantity, salesProceeds);
+            showYourTicket(displayPrice, alreadyIn);
         }
     }
 
@@ -195,9 +196,11 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         Dog dog = new Dog();
         BarkedSound sound = dog.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => wan
+        assertLog("wan", sea);
         int land = dog.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 7
+        assertLog(7, land);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -205,9 +208,11 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         Animal animal = new Dog();
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => wan
+        assertLog("wan", sea);
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 7
+        assertLog(7, land);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -215,9 +220,11 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         Animal animal = createAnyAnimal();
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => wan
+        assertLog("wan", sea);
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 7
+        assertLog(7, land);
     }
 
     private Animal createAnyAnimal() {
@@ -233,9 +240,11 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     private void doAnimalSeaLand_for_4th(Animal animal) {
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => wan
+        assertLog("wan", sea);
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 7
+        assertLog(7, land);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -243,9 +252,11 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         Animal animal = new Cat();
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => nya-
+        assertLog("nya-", sea);
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 5
+        assertLog(5, land);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -253,9 +264,11 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         Animal animal = new Zombie();
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => uooo
+        assertLog("uooo", sea);
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => -1
+        assertLog(-1, land);
     }
 
     // ===================================================================================
@@ -265,18 +278,22 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     public void test_objectOriented_polymorphism_interface_dispatch() {
         Loudable loudable = new Zombie();
         String sea = loudable.soundLoudly();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => uooo
+        assertLog("uooo", sea);
         String land = ((Zombie) loudable).bark().getBarkWord();
-        log(land); // your answer? => 
+        log(land); // your answer? => uooo
+        assertLog("uooo", land);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_interface_hierarchy() {
         Loudable loudable = new AlarmClock();
         String sea = loudable.soundLoudly();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => jiri jiri jiri---
+        assertLog("jiri jiri jiri---", sea);
         boolean land = loudable instanceof Animal;
-        log(land); // your answer? => 
+        log(land); // your answer? => false
+        assertLog(false, land);
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -284,9 +301,11 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         Animal seaAnimal = new Cat();
         Animal landAnimal = new Zombie();
         boolean sea = seaAnimal instanceof FastRunner;
-        log(sea); // your answer? => 
+        log(sea); // your answer? => true
+        assertLog(true, sea);
         boolean land = landAnimal instanceof FastRunner;
-        log(land); // your answer? => 
+        log(land); // your answer? => false
+        assertLog(false, land);
     }
 
     /**
@@ -295,6 +314,8 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      */
     public void test_objectOriented_polymorphism_interface_runnerImpl() {
         // your confirmation code here
+        Animal dog = new Dog();
+        assertTrue(dog instanceof FastRunner);
     }
 
     // ===================================================================================
@@ -306,6 +327,9 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      */
     public void test_objectOriented_polymorphism_makeConcrete() {
         // your confirmation code here
+        Animal eagle = new PhilippineMonkeyEatingEagle();
+        BarkedSound bark = eagle.bark();
+        assertLog("kikikiki-ki-ki-kuk...kuk...kuk...kuh.", bark.getBarkWord());
     }
 
     /**
@@ -314,6 +338,20 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      */
     public void test_objectOriented_polymorphism_makeInterface() {
         // your confirmation code here
+        PhilippineMonkeyEatingEagle eagle = new PhilippineMonkeyEatingEagle();
+        int distance = 5;
+        int origHitPoint = eagle.getHitPoint();
+        eagle.fly(distance);
+        int curHitPoint = eagle.getHitPoint();
+
+        assertEquals(origHitPoint - distance, curHitPoint);
+        assertTrue(eagle instanceof Animal);
+        assertTrue(eagle instanceof Flier);
+
+        Dog dog = new Dog();
+        // dog.fly(distance); // does not compile
+        assertTrue(dog instanceof Animal);
+        assertFalse(dog instanceof Flier);
     }
 
     // ===================================================================================
@@ -325,6 +363,17 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      */
     public void test_objectOriented_writing_generalization_extractToAbstract() {
         // your confirmation code here
+        int pageSize = 50;
+        int pageNumber = 2;
+        int offset = pageSize * (pageNumber - 1);
+
+        St6MySql mysql = new St6MySql();
+        String mysqlQuery = mysql.buildPagingQuery(pageSize, pageNumber);
+        assertEquals("limit " + offset + ", " + pageSize, mysqlQuery);
+
+        St6PostgreSql postgreSql = new St6PostgreSql();
+        String postgreSqlQuery = postgreSql.buildPagingQuery(pageSize, pageNumber);
+        assertEquals("offset " + offset + " limit " + pageSize, postgreSqlQuery);
     }
 
     /**
@@ -333,6 +382,20 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      */
     public void test_objectOriented_writing_specialization_extractToConcrete() {
         // your confirmation code here
+        String login = "david";
+        String relativePath = "Documents";
+
+        St6MacOS macOS = new St6MacOS(login);
+        String macOSPath = macOS.buildUserResourcePath(relativePath);
+        assertEquals("/Users/" + login + "/" + relativePath, macOSPath);
+
+        St6Windows windows = new St6Windows(login);
+        String windowsPath = windows.buildUserResourcePath(relativePath);
+        assertEquals("\\Users\\" + login + "\\" + relativePath, windowsPath);
+
+        St6OldWindows oldWindows = new St6OldWindows(login);
+        String oldWindowsPath = oldWindows.buildUserResourcePath(relativePath);
+        assertEquals("\\Documents and Settings\\" + login + "\\" + relativePath, oldWindowsPath);
     }
 
     // ===================================================================================
@@ -344,6 +407,13 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      */
     public void test_objectOriented_writing_withDelegation() {
         // your confirmation code here
+        Dog dog = new Dog();
+        assertEquals("wan", dog.bark().getBarkWord());
+        assertEquals(7, dog.getHitPoint());
+
+        Cat cat = new Cat();
+        assertEquals("nya-", cat.bark().getBarkWord());
+        assertEquals(5, cat.getHitPoint());
     }
 
     /**
@@ -352,5 +422,6 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      */
     public void test_objectOriented_zoo() {
         // do nothing here
+        // no cause they have no need for hit points and only need to extend BarkProcess
     }
 }

@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * The object for animal(動物).
  * @author jflute
  */
-public abstract class Animal implements Loudable {
+public abstract class Animal extends BarkProcess implements Loudable {
 
     // ===================================================================================
     //                                                                          Definition
@@ -47,34 +47,6 @@ public abstract class Animal implements Loudable {
     }
 
     // ===================================================================================
-    //                                                                               Bark
-    //                                                                              ======
-    public BarkedSound bark() {
-        breatheIn();
-        prepareAbdominalMuscle();
-        String barkWord = getBarkWord();
-        BarkedSound barkedSound = doBark(barkWord);
-        return barkedSound;
-    }
-
-    protected void prepareAbdominalMuscle() {
-        logger.debug("...Using my abdominal muscle"); // dummy implementation
-        downHitPoint();
-    }
-
-    protected void breatheIn() {
-        logger.debug("...Breathing in"); // dummy implementation
-        downHitPoint();
-    }
-
-    protected abstract String getBarkWord();
-
-    protected BarkedSound doBark(String barkWord) {
-        downHitPoint();
-        return new BarkedSound(barkWord);
-    }
-
-    // ===================================================================================
     //                                                                           Hit Point
     //                                                                           =========
     protected void downHitPoint() {
@@ -82,6 +54,14 @@ public abstract class Animal implements Loudable {
         if (hitPoint == 0) {
             throw new IllegalStateException("I'm very tired, so I want to sleep" + getBarkWord());
         }
+    }
+
+    // ===================================================================================
+    //                                                                        Bark Process
+    //                                                                        ============
+    @Override
+    protected void postProcessMuscularExertion() {
+        downHitPoint();
     }
 
     // ===================================================================================

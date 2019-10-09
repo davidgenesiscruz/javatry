@@ -68,7 +68,7 @@ public class Zombie extends Animal {
     //                                                                           Hit Point
     //                                                                           =========
     @Override
-    protected void downHitPoint() {
+    protected void postProcessMuscularExertion() {
         // do nothing, infinity hit point
     }
 
