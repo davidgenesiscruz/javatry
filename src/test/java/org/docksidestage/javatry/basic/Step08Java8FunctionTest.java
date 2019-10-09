@@ -68,7 +68,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         log("...Executing lambda expression style callback");
         helpCallbackConsumer(stage -> log(stage + ": " + title));
 
-        // your answer? => 
+        // your answer? => yes
 
         // cannot reassign because it is used at callback process
         //name = "wave";
@@ -84,7 +84,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
             log(stage);
         });
         log("lost river");
-        // your answer? => 
+        // your answer? => harbor, broadway, dockside, hangar, lost river
     }
 
     private class St8BasicConsumer implements Consumer<String> {
@@ -116,7 +116,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         String sea = helpCallbackFunction(number -> {
             return label + ": " + number;
         });
-        log(sea); // your answer? => 
+        log(sea); // your answer? => number: 7
     }
 
     private String helpCallbackFunction(Function<Integer, String> oneArgLambda) {
@@ -141,17 +141,27 @@ public class Step08Java8FunctionTest extends PlainTestCase {
      * </pre>
      */
     public void test_java8_lambda_convertStyle_basic() {
-        helpCallbackSupplier(new Supplier<String>() { // sea
-            public String get() {
-                return "broadway";
-            }
+        //        helpCallbackSupplier(new Supplier<String>() { // sea
+        //            public String get() {
+        //                return "broadway";
+        //            }
+        //        });
+
+        helpCallbackSupplier(() -> {
+            return "broadway";
         });
 
-        helpCallbackSupplier(() -> { // land
-            return "dockside";
-        });
+        //        helpCallbackSupplier(() -> { // land
+        //            return "dockside";
+        //        });
 
-        helpCallbackSupplier(() -> "hangar"); // piari
+        helpCallbackSupplier(() -> "dockside");
+
+        //        helpCallbackSupplier(() -> "hangar"); // piari
+
+        helpCallbackSupplier(() -> {
+            return "hangar";
+        });
     }
 
     private void helpCallbackSupplier(Supplier<String> oneArgLambda) {
@@ -169,17 +179,17 @@ public class Step08Java8FunctionTest extends PlainTestCase {
     public void test_java8_optional_concept() {
         St8Member oldmember = new St8DbFacade().oldselectMember(1);
         if (oldmember != null) {
-            log(oldmember.getMemberId(), oldmember.getMemberName());
+            log(oldmember.getMemberId(), oldmember.getMemberName()); // 1, broadway
         }
         Optional<St8Member> optMember = new St8DbFacade().selectMember(1);
         if (optMember.isPresent()) {
             St8Member member = optMember.get();
-            log(member.getMemberId(), member.getMemberName());
+            log(member.getMemberId(), member.getMemberName()); // 1, broadway
         }
         optMember.ifPresent(member -> {
-            log(member.getMemberId(), member.getMemberName());
+            log(member.getMemberId(), member.getMemberName()); // 1, broadway
         });
-        // your answer? => 
+        // your answer? => yes
     }
 
     /**
@@ -195,7 +205,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         optMember.ifPresent(member -> {
             log(member.getMemberId(), member.getMemberName());
         });
-        // your answer? => 
+        // your answer? => yes (test_java8_optional_conceptと何が違うんだい！？)
     }
 
     /**
